@@ -27,7 +27,8 @@ $this->AddCommand( new class($this) extends Command
         $client = $message->client;
         
         try {
-            $channel = $client->channels->get('CHANNEL_ID');
+            //$channel = $client->channels->get('CHANNEL_ID');
+            $channel = $message->channel;
             
             // Making sure the channel exists
             if($channel) {
@@ -42,7 +43,7 @@ $this->AddCommand( new class($this) extends Command
                 ->addField('Test 2', 'Value 2', true)                                                // Add one inline field
                 ->addField('Test 3', 'Value 3', true)                                                // Add another inline field
                 ->setThumbnail('https://avatars1.githubusercontent.com/u/4529744?s=460&v=4')         // Set a thumbnail (the image in the top right corner)
-                ->setImage('https://avatars1.githubusercontent.com/u/4529744?s=460&v=4')             // Set an image (below everything except footer)
+                ->setImage('https://pruebajoomla.guillermokeil.com/cache/resized/images/mcnor_comidas/beef-2227378__340a_1280x720.jpg')             // Set an image (below everything except footer)
                 ->setTimestamp()                                                                     // Set a timestamp (gets shown next to footer)
                 ->setAuthor('Yasmin', 'https://avatars1.githubusercontent.com/u/4529744?s=460&v=4')  // Set an author with icon
                 ->setFooter('Generated with the Rich Embed Builder (Y)')                               // Set a footer without icon
