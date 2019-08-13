@@ -116,22 +116,32 @@ $this->AddCommand( new class($this) extends Command
     {
         $cities_info = array();  // array holding wheather info of matching cities
         
+        // set the local language
+        //setlocale(LC_CTYPE, 'es_ES');
+        //setlocale(LC_CTYPE, 'en_GB');
+        
         // convert Json into array
         $data = json_decode($answer, true);
-       
+        
         // search the response for the requested city
         // all cities matching the request are reported
         foreach ( $data as $city )
         {
             // check requested city against city name
-            // TODO Covert vowels with accent before search
-            $pos = strpos( strtolower($city['name']), strtolower($this->args[0]) );
+            
+            // get the strings with non accent and lowercase
+            $city_name   = $this->normalize_string( $city['name'] );
+            $target_city = $this->normalize_string( $this->args[0]);
+            
+            // search for the target city in the city name of this array element
+            $pos = strpos( $city_name, $target_city );
             
             if ( $pos !== false)
             {
                 // the city name matches the request
                 $info = new stdClass();
                 
+                // TODO Add status as image
                 // extract city info
                 $info->name     = $city['name'];
                 $info->temp		= $city['weather']['temp'];
@@ -193,6 +203,18 @@ $this->AddCommand( new class($this) extends Command
         }
         
     }   // end replyinfo
+    
+    //=====================================
+    // nomalize_string()
+    // converts to lowercase and eliminates accents
+    private function normalize_string( string $in ) : string
+    {
+        $search = array( 'á','é','í','ó','ú','ü');
+        $replace = array('a','e','i','o','u','u');
+        
+        
+        return strtolower(str_replace($search, $replace, $in));
+    }
     
 } // end class
 

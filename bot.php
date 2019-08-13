@@ -9,7 +9,7 @@ require_once(__DIR__.'/CommandHandler.php');
  * Actions before the loop starts  
  * 
  */
-
+ 
 
 // Get configuration data
 $config = array();
