@@ -116,9 +116,6 @@ $this->AddCommand( new class($this) extends Command
     {
         $cities_info = array();  // array holding wheather info of matching cities
         
-        // set the local language
-        //setlocale(LC_CTYPE, 'es_ES');
-        //setlocale(LC_CTYPE, 'en_GB');
         
         // convert Json into array
         $data = json_decode($answer, true);
@@ -177,12 +174,14 @@ $this->AddCommand( new class($this) extends Command
             // add info of each matching city
             foreach($cities_info as $info )
             {
-                    // TODO Handle limit of 25 fields per Embed
+                // TODO Handle limit of 25 fields per Embed
                 $embed
-                    ->addField($info->name, '----')                 // Add city name
+                    ->addField($info->name,"*")                     // Add city name
                     ->addField('Temp', $info->temp, true)           // Add Temp inline field
+                    ->addField('ST  ', $info->st,   true)           // Add ST inline field
                     ->addField('Hum ', $info->humi, true)           // Add Hum inline field
-                    ->addField('ST  ', $info->st,   true);          // Add ST inline field
+                    ->addField('-----------------------', 
+                                '-----------------------');         // Add separator
             }
             
             // finish embed
@@ -209,8 +208,8 @@ $this->AddCommand( new class($this) extends Command
     // converts to lowercase and eliminates accents
     private function normalize_string( string $in ) : string
     {
-        $search = array( 'á','é','í','ó','ú','ü');
-        $replace = array('a','e','i','o','u','u');
+        $search = array( 'á','é','í','ó','ú','ü','A','É','Í','Ó','Ú','Ü');
+        $replace = array('a','e','i','o','u','u','A','E','I','O','U','U');
         
         
         return strtolower(str_replace($search, $replace, $in));
