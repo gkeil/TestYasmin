@@ -48,6 +48,10 @@ $this->AddCommand( new class($this) extends Command
         
         // OK. The Go On with the request
         //
+        $message->channel->startTyping();
+        
+        // Start the Typing indicator
+        
         // get the React event loop.
         $loop = $message->client->getLoop();
         
@@ -199,6 +203,8 @@ $this->AddCommand( new class($this) extends Command
                 echo $error.PHP_EOL;
             });
             
+            // clear typing indicator
+            $this->message->channel->stopTyping();
         }
         
     }   // end replyinfo
