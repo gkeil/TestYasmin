@@ -20,6 +20,7 @@ $this->AddCommand( new class($this) extends Command
 {
     // Servicio Meteorologico Nacional URL
     private $url = "https://ws.smn.gob.ar/map_items/weather";
+    private const MaxFields = 20;
     private $message;
     private $args;
     
@@ -148,6 +149,7 @@ $this->AddCommand( new class($this) extends Command
                 $info->temp		= $city['weather']['temp'];
                 $info->humi		= $city['weather']['humidity'];
                 $info->st		= $city['weather']['st'];
+                $info->desc		= $city['weather']['description'];
                 
                 if ( !$info->st )	// validate ST
                     $info->st = $info->temp;
@@ -170,6 +172,9 @@ $this->AddCommand( new class($this) extends Command
             // create embed with all the info
             $embed = new \CharlotteDunois\Yasmin\Models\MessageEmbed();
             
+            // Count the number of fields we are showing and keep under maximum
+            $field_cnt = 0;
+            
             // Build the embed
             $embed
             ->setTitle('Climate info')                              // Set a title
@@ -178,20 +183,37 @@ $this->AddCommand( new class($this) extends Command
             // add info of each matching city
             foreach($cities_info as $info )
             {
-                // TODO Handle limit of 25 fields per Embed
+                if ( $field_cnt < self::MaxFields )
+                {
+                
+                    // prepare string with city climate info
+                    $info_str = "";
+                    $info_str .= "Temp: ".$info->temp." ST: ".$info->st.PHP_EOL;
+                    $info_str .= "Cond: ".$info->desc." Humi: ".$info->humi.PHP_EOL;
+                    
+                    // add field
+                    $embed
+                    ->addField($info->name, $info_str);         // Add city climate info
+                
+                    // increment field counter
+                    $field_cnt++;
+                }
+            }
+            
+            // add warning if the max fields was excedded
+            if ( $field_cnt >= self::MaxFields )
+            {
                 $embed
-                    ->addField($info->name,"*")                     // Add city name
-                    ->addField('Temp', $info->temp, true)           // Add Temp inline field
-                    ->addField('ST  ', $info->st,   true)           // Add ST inline field
-                    ->addField('Hum ', $info->humi, true)           // Add Hum inline field
-                    ->addField('-----------------------', 
-                                '-----------------------');         // Add separator
+                ->addField("Warning", "Only first ".self::MaxFields." matching cities are displayed".PHP_EOL);         // Add warning
+                
             }
             
             // finish embed
             $embed
             ->setFooter('Data from Servicio Metorologico Nacional');              // Set a footer without icon
             
+            // clear typing indicator
+            $this->message->channel->stopTyping();
             
             // Send the message
             
@@ -203,8 +225,7 @@ $this->AddCommand( new class($this) extends Command
                 echo $error.PHP_EOL;
             });
             
-            // clear typing indicator
-            $this->message->channel->stopTyping();
+            
         }
         
     }   // end replyinfo
