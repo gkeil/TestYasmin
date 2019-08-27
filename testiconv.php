@@ -3,7 +3,7 @@
 //setlocale(LC_CTYPE , 'es_ES');
 setlocale(LC_CTYPE , 'en_GB');
 
-$seed = "San Martín";
+$seed = "San Martín Tín";
 
 $translated = iconv("UTF-8", "ASCII//TRANSLIT", $seed);
 //$translated = iconv("UTF-8", "ASCII", $seed);
